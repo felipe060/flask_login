@@ -1,0 +1,38 @@
+@charset 'utf8';
+
+*{
+    background-color: aqua;
+    color: white;
+    font-family: arial, helvetica, sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+
+.section_form{
+    text-align: center;
+    background-color: red;
+    padding: 10px;
+    margin-top: 40vh;
+}
+
+
+form{
+    background-color: black;
+}
+
+
+p{
+    background-color: black;
+    padding: 10px;
+}
+
+
+label{
+    background-color: black;
+}
+
+
+input{
+    background-color: black;
+}
