@@ -5,22 +5,31 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="../static/css/style_index.css">
+    <link rel="shortcut icon" href="../static/images/favicon.ico" type="image/x-icon">
     <title>index</title>
 </head>
 <body>
 
-<section class="section_form">
-    <form action="{{ url_for('index') }}" method="get">
-        <p>
-            <label for="id_user"> user: </label>
-            <input autofocus id="id_user">
+<div class="container">
+    <section class="section_form">
+        <p class="p_img">
+            <img src="../static/images/usuario2.png" title="usuario" >
         </p>
-        <p>
-            <label for="id_senha"> senha: </label>
-            <input id="id_senha">
-        </p>
-    </form>
-</section>
+        <form action="{{ url_for('index') }}" method="get">
+            <p>
+                <label for="id_user"> user: </label>
+                <input autofocus id="id_user" class="input_user">
+            </p>
+            <p class="p_senha">
+                <label for="id_senha"> senha: </label>
+                <input id="id_senha">
+            </p>
+            <p class="p_input">
+                <input type="submit" value="log in">
+            </p>
+        </form>
+    </section>
+</div>
 
 </body>
 </html>
