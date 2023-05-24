@@ -18,11 +18,12 @@
         <form action="{{ url_for('add_user') }}" method="post">
             <p>
                 <label for="id_user"> user: </label>
-                <input type="text" autofocus id="id_user" class="input_user">
+                <input type="text" autocomplete="on" maxlength="40" placeholder="max - 40" autofocus required
+                       name="name_user" id="id_user" class="input_user">
             </p>
             <p class="p_senha">
                 <label for="id_senha"> senha: </label>
-                <input type="password" id="id_senha">
+                <input type="password" maxlength="240" required name="name_senha" id="id_senha">
             </p>
             <p class="p_input">
                 <input type="submit" value="log in">
