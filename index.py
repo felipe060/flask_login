@@ -1,4 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, request_finished
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String, create_engine, text
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 app = Flask(__name__)
 
