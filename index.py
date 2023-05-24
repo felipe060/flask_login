@@ -33,14 +33,36 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/user/<name>')
-def user(name):
-    return render_template('user.html', name=name)
+@app.route('/add', methods=['GET', 'POST'])
+def add_user():
+    user = request.form.get('name_user')
+    senha = request.form.get('name_senha')
+    new_user = User(user=user, senha=senha)
+    print('')
+    print(f'funcao add_user \n \n'
+          f'new user --> {user} \n'
+          f'senha --> {senha} \n')
+    import sqlalchemy
+    try:
+        conn = engine.connect()
+        conn.execute(f"insert into tb_users_rail values (default, '{user}', '{senha}')")
+        print('')
+        print('user adicionado c sucesso \n')
+        return render_template('user_novo.html')
+    except sqlalchemy.exc.IntegrityError:
+        print('')
+        print('esse user ja existe \n')
+        return render_template('user_existe.html')
 
 
 @app.errorhandler(404)
 def error_404(e):
     return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def error_500(e):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':
