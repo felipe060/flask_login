@@ -18,6 +18,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        #default é True
 db = SQLAlchemy(app)
 
 
+class User(Base):
+    __tablename__ = 'tb_users_rail'
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    user = Column(String(40), unique=True, nullable=False)
+    senha = Column(String(240), nullable=False)
+
+#Base.metadata.create_all(engine)
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
