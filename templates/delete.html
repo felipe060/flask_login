@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>delete</title>
+</head>
+<body>
+
+<h1>do u really wanna delete user --> <br> <br> {{id}} - {{user}}</h1>
+
+<form method="post" action="{{ url_for('delete_user') }}">
+    <input type="submit" value="yes">
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <input type="number" value="{{id}}" name="name_user">
+</form>
+
+</body>
+</html>

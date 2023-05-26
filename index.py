@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, request_finished
+from flask import Flask, render_template, request, redirect, url_for, request_finished, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -14,6 +15,7 @@ session = Session()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:eHr9fnsWdoa7lhIgcTd4@containers-us-west-176.railway.app/railway?6587'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        #default é True
+app.config['SECRET_KEY'] = 'secret_key'
 
 db = SQLAlchemy(app)
 
@@ -53,6 +55,30 @@ def add_user():
         print('')
         print('esse user ja existe \n')
         return render_template('user_existe.html')
+
+
+@app.route('/delete/<int:id>', methods=['GET', 'POST'])
+def delete(id):
+    try:
+        id = id
+        query =session.execute(text(f"select id, user from tb_users_rail where id = {id}"))
+        for item in query:
+            user = item.user
+        user = user
+        return render_template('delete.html', id=id, user=user)
+    except:
+        return 'this id dont have any user associated'
+
+
+@app.route('/delete_user', methods=['GET', 'POST'])
+def delete_user():
+    id = request.form.get('name_user')
+    try:
+        conn = engine.connect()
+        conn.execute(f"delete from tb_users_rail where id = {id}")
+        return render_template('user_deleted.html')
+    except:
+        return render_template('user_deleted.html')
 
 
 @app.errorhandler(404)
