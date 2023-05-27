@@ -67,7 +67,7 @@ def delete(id):
         user = user
         return render_template('delete.html', id=id, user=user)
     except:
-        return 'this id dont have any user associated'
+        return "this id dont have any user associated"
 
 
 @app.route('/delete_user', methods=['GET', 'POST'])
@@ -93,3 +93,5 @@ def error_500(e):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+#isso aq so é p ter na branch teste
