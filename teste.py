@@ -10,3 +10,15 @@ print(variavel)
 check = check_password_hash(variavel, senha)
 
 print(check)
+
+
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine('mysql+pymysql://root:felipe008@localhost/flask_zero', echo=True)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+query = session.execute(text('select count(id) from tb_users where email like "e%"'))
+conn = engine.connect(close_with_result=True)
