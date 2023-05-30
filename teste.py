@@ -21,4 +21,31 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 query = session.execute(text('select count(id) from tb_users where email like "e%"'))
-conn = engine.connect(close_with_result=True)
+#conn = engine.connect(close_with_result=True)
+
+
+def funcao():
+    conn = engine.connect()
+    result = conn.execute(text("select count(id) from tb_users where email like 'e%' "))
+    conn.close()
+    for item in result:
+        print(item)
+
+
+funcao()
+
+
+def cadastro():
+    entrada = input(str('digite uma palavra'))
+    string_hash = generate_password_hash(entrada)
+    print(string_hash)
+
+    verifica = check_password_hash(string_hash, entrada)
+
+    if verifica:
+        print('a senha condiz c o hash')
+    else:
+        print('a senha n condiz c o hash')
+
+
+cadastro()
