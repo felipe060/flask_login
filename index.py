@@ -44,10 +44,12 @@ def add_user():
     print(f'funcao add_user \n \n'
           f'new user --> {user} \n'
           f'senha --> {senha} \n')
+    senha_hash = generate_password_hash(senha)
+    print(f'senha_hash --> {senha_hash} \n')
     import sqlalchemy
     try:
         conn = engine.connect()
-        conn.execute(f"insert into tb_users_rail values (default, '{user}', '{senha}')")
+        conn.execute(f"insert into tb_users_rail values (default, '{user}', '{senha_hash}')")
         print('')
         print('user adicionado c sucesso \n')
         return render_template('user_novo.html')
