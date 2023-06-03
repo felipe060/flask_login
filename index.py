@@ -6,14 +6,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-engine = create_engine('mysql+pymysql://root:eHr9fnsWdoa7lhIgcTd4@containers-us-west-176.railway.app/railway?6587', echo=True, query_cache_size=0,
-                       connect_args=dict(host='containers-us-west-176.railway.app', port=6587))
+engine = create_engine('mysql+pymysql://root:XYwWDEPmb53sQD3ezUeH@containers-us-west-35.railway.app/railway?6471', echo=True, query_cache_size=0,
+                       connect_args=dict(host='containers-us-west-35.railway.app', port=6471))
 
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:eHr9fnsWdoa7lhIgcTd4@containers-us-west-176.railway.app/railway?6587'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:XYwWDEPmb53sQD3ezUeH@containers-us-west-35.railway.app/railway?6471'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        #default é True
 app.config['SECRET_KEY'] = 'secret_key'
 
