@@ -43,20 +43,55 @@ def add_user():
     print('')
     print(f'funcao add_user \n \n'
           f'new user --> {user} \n'
-          f'senha --> {senha} \n')
+          f'senha --> {senha}')
+
     senha_hash = generate_password_hash(senha)
     print(f'senha_hash --> {senha_hash} \n')
-    import sqlalchemy
-    try:
+
+    button = request.form['name_submit']
+
+    if button == 'cadastrar':                   #botao cadastrar
+        print(f'button --> {button} \n')
+        import sqlalchemy
+        try:
+            conn = engine.connect()
+            conn.execute(f"insert into tb_users_rail values (default, '{user}', '{senha_hash}')")
+            print('')
+            print('user adicionado c sucesso \n')
+            return render_template('user_novo.html')
+        except sqlalchemy.exc.IntegrityError:
+            print('')
+            print('esse user ja existe \n')
+            return render_template('user_existe.html')
+
+    elif button == 'login':                 #botao login
+        print('')
+        print(f'button --> {button} \n')
         conn = engine.connect()
-        conn.execute(f"insert into tb_users_rail values (default, '{user}', '{senha_hash}')")
-        print('')
-        print('user adicionado c sucesso \n')
-        return render_template('user_novo.html')
-    except sqlalchemy.exc.IntegrityError:
-        print('')
-        print('esse user ja existe \n')
-        return render_template('user_existe.html')
+        query_user = conn.execute(f"select user from tb_users_rail where user = '{user}'")
+        print('query_user --> ', query_user, '\n')
+        for item in query_user:
+            usuario = item.user
+            print(usuario)
+
+        try:
+            if user == usuario:
+                print('o user escrito no form consta no banco de dados')
+                conn = engine.connect()
+                query_senha = conn.execute(f"select * from tb_users_rail where user = '{user}'")
+                for item in query_senha:
+                    query_senha = item.senha
+                    print('query_senha -->', query_senha, '\n')
+                query_senha = check_password_hash(query_senha, senha)
+                if query_senha:
+                    print('a senha informada pelo usuario esta de acordo com a senha do banco de dados')
+                    return render_template('login_success.html')
+                elif not query_senha:
+                    print('a senha escrita no form n esta de acordo com a senha correspondente ao user escrito no form')
+                    return render_template('senha_errada.html')
+        except UnboundLocalError:
+            print('o user escrito no form n consta no banco de dados')
+            return render_template('login_fail.html')
 
 
 @app.route('/delete/<int:id>', methods=['GET', 'POST'])
@@ -69,7 +104,7 @@ def delete(id):
         user = user
         return render_template('delete.html', id=id, user=user)
     except:
-        return 'this id dont have any user associated'
+        return "this id dont have any user associated"
 
 
 @app.route('/delete_user', methods=['GET', 'POST'])
@@ -95,3 +130,5 @@ def error_500(e):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+#isso aq so é p ter na branch teste
