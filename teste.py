@@ -32,7 +32,7 @@ def funcao():
         print(item)
 
 
-funcao()
+#funcao()
 
 
 def cadastro():
@@ -48,4 +48,24 @@ def cadastro():
         print('a senha n condiz c o hash')
 
 
-cadastro()
+#cadastro()
+
+
+def verifica():
+    usuario = 'celso@hotmail.com'
+    conn = engine.connect()
+    query = conn.execute(f"select * from tb_users where email = '{usuario}'")
+    for item in query:
+        user = item.email
+
+    try:
+        if usuario == user:
+            query = True
+            return query
+    except UnboundLocalError:
+        query = False
+        return query
+
+
+variave = verifica()
+print(variave)

@@ -15,10 +15,10 @@
         <p class="p_img">
             <img src="../static/images/usuario2.png" title="usuario" >
         </p>
-        <form action="{{ url_for('add_user') }}" method="post">
+        <form action="{{ url_for('add_user') }}" method="post" name="name_form" id="id_form">
             <p>
                 <label for="id_user"> user: </label>
-                <input type="text" autocomplete="on" maxlength="40" placeholder="max - 40" autofocus required
+                <input type="text" onpaste="return false" autocomplete="on" maxlength="40" placeholder="max - 40" autofocus required
                        name="name_user" id="id_user" class="input_user">
             </p>
             <p class="p_senha">
@@ -26,8 +26,8 @@
                 <input type="password" maxlength="240" required name="name_senha" id="id_senha">
             </p>
             <p class="p_input">
-                <input type="submit" value="cadastrar" name="name_cadastra">
-                <input type="submit" value="login" name="name_login">
+                <input type="submit" value="cadastrar" name="name_submit">
+                <input type="submit" value="login" name="name_submit">
             </p>
         </form>
     </section>

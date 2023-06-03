@@ -6,14 +6,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-engine = create_engine('mysql+pymysql://root:eHr9fnsWdoa7lhIgcTd4@containers-us-west-176.railway.app/railway?6587', echo=True, query_cache_size=0,
-                       connect_args=dict(host='containers-us-west-176.railway.app', port=6587))
+engine = create_engine('mysql+pymysql://root:XYwWDEPmb53sQD3ezUeH@containers-us-west-35.railway.app/railway?6471', echo=True, query_cache_size=0,
+                       connect_args=dict(host='containers-us-west-35.railway.app', port=6471))
 
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:eHr9fnsWdoa7lhIgcTd4@containers-us-west-176.railway.app/railway?6587'
+app.config['SQLALCHEMY_DATABASE_URI'] = mysql+pymysql://root:XYwWDEPmb53sQD3ezUeH@containers-us-west-35.railway.app/railway?6471'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        #default é True
 app.config['SECRET_KEY'] = 'secret_key'
 
@@ -44,19 +44,31 @@ def add_user():
     print(f'funcao add_user \n \n'
           f'new user --> {user} \n'
           f'senha --> {senha} \n')
+
     senha_hash = generate_password_hash(senha)
     print(f'senha_hash --> {senha_hash} \n')
-    import sqlalchemy
-    try:
-        conn = engine.connect()
-        conn.execute(f"insert into tb_users_rail values (default, '{user}', '{senha_hash}')")
+
+    button = request.form['name_submit']
+    print(button)
+
+    if button == 'cadastrar':
         print('')
-        print('user adicionado c sucesso \n')
-        return render_template('user_novo.html')
-    except sqlalchemy.exc.IntegrityError:
+        print(f'button --> {button} \n')
+        import sqlalchemy
+        try:
+            conn = engine.connect()
+            conn.execute(f"insert into tb_users_rail values (default, '{user}', '{senha_hash}')")
+            print('')
+            print('user adicionado c sucesso \n')
+            return render_template('user_novo.html')
+        except sqlalchemy.exc.IntegrityError:
+            print('')
+            print('esse user ja existe \n')
+            return render_template('user_existe.html')
+    elif button == 'login':
         print('')
-        print('esse user ja existe \n')
-        return render_template('user_existe.html')
+        print(f'button --> {button}')
+        return button
 
 
 @app.route('/delete/<int:id>', methods=['GET', 'POST'])
