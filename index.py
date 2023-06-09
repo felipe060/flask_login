@@ -37,15 +37,18 @@ def index():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
+
     user = request.form.get('name_user')
     senha = request.form.get('name_senha')
     new_user = User(user=user, senha=senha)
+
     print('')
     print(f'funcao add_user \n \n'
           f'new user --> {user} \n'
           f'senha --> {senha}')
 
     senha_hash = generate_password_hash(senha)
+
     print(f'senha_hash --> {senha_hash} \n')
 
     button = request.form['name_submit']
