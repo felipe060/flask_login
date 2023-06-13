@@ -69,3 +69,13 @@ def verifica():
 
 variave = verifica()
 print(variave)
+
+engine2 = create_engine('mysql+pymysql://root:felipe008@localhost/flask_zero')
+
+conn2 = engine2.connect()
+query2 = conn2.execute('select * from tb_posts2')
+
+for item in query2:
+    data = item.data
+    print(item)
+

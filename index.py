@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, request_finished, flash
+from flask import Flask, render_template, request, redirect, url_for, request_finished, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, create_engine, text
+from sqlalchemy import Column, Integer, String, create_engine, text, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 
 app = Flask(__name__)
 
@@ -19,20 +21,61 @@ app.config['SECRET_KEY'] = 'secret_key'
 
 db = SQLAlchemy(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
-class User(Base):
+
+@login_manager.user_loader
+def load_user(user_id):
+    id = user_id
+    conn = engine.connect()
+    query = conn.execute(f"select * from tb_users_rail where id={id}")
+    return query
+
+
+class User(Base, UserMixin):
     __tablename__ = 'tb_users_rail'
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     user = Column(String(40), unique=True, nullable=False)
     senha = Column(String(240), nullable=False)
 
+
+class Post(Base):
+    __tablename__ = 'tb_posts_rail'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_user = Column(ForeignKey('tb_users_rail.id'))
+    titulo = Column(String(80), nullable=False)
+    texto = Column(String(244), nullable=False)
+    data = Column(DateTime, nullable=False)
+
+
 #Base.metadata.create_all(engine)
 
 
 @app.route('/')
 def index():
+    #computer2 = request.environ['REMOTE_ADDR']
+    #print('computer2 -->', computer2)
     return render_template('index.html')
+
+
+@app.route('/login')
+def login():
+    return redirect('/')
+
+
+@app.route('/user/<int:id>', methods=['GET', 'POST'])
+@login_required
+def user(id):
+    id = id
+    print(id)
+    conn = engine.connect()
+    query_posts = conn.execute(f"select * from tb_posts_rail where id_user = {id}")
+    #conn.execute(f"insert into tb_posts_rail values(default, '{id}', 'titulo 7', 'texto 7', '{datetime.utcnow()}')")
+    return render_template('user.html', id=id, query_posts=query_posts)
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -85,6 +128,7 @@ def add_user():
                 query_senha = check_password_hash(query_senha, senha)
                 if query_senha:
                     print('a senha informada pelo usuario esta de acordo com a senha do banco de dados')
+                    #login_user(new_user)
                     return render_template('login_success.html')
                 elif not query_senha:
                     print('a senha escrita no form n esta de acordo com a senha correspondente ao user escrito no form')
@@ -92,31 +136,13 @@ def add_user():
         except UnboundLocalError:
             print('o user escrito no form n consta no banco de dados')
             return render_template('login_fail.html')
-'''        conn = engine.connect()
-        query = conn.execute(f"select * from tb_users_rail where user = '{user}'")
-        for item in query:
-            usuario = item.user
-        try:
-            if user == usuario:
-                query = True        #o user existe
-                return query
-        except UnboundLocalError:
-            query = False       #o user n existe
-            return query
-
-    if query:
-        conn = engine.connect()
-        query_senha = conn.execute(f"select senha from tb_users_rail where user = '{user}'")
-        query_senha = check_password_hash(query_senha)
-        if senha == query_senha:
-            return render_template('login_success.html')'''
 
 
 @app.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):
     try:
         id = id
-        query =session.execute(text(f"select id, user from tb_users_rail where id = {id}"))
+        query = session.execute(text(f"select id, user from tb_users_rail where id = {id}"))
         for item in query:
             user = item.user
         user = user
@@ -132,7 +158,7 @@ def delete_user():
         conn = engine.connect()
         conn.execute(f"delete from tb_users_rail where id = {id}")
         return render_template('user_deleted.html')
-    except:
+    except:                                             #usuario n achado, n existe, n tem oq deletar
         return render_template('user_deleted.html')
 
 

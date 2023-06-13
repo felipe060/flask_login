@@ -1,0 +1,22 @@
+@charset 'utf8';
+
+
+*{
+    background-color: #1b1f27;
+    color: white;
+    font-family: arial, helvetica, sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+section{
+    margin: 20px;
+}

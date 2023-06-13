@@ -1,14 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>user</title>
+    <link rel="stylesheet" href="../static/css/style_user.css">
 </head>
 <body>
 
-<h1>Hello, {{ name | title }}</h1>
-<h1>Hello, {{ name | striptags }}</h1>
-<h1>Hello, {{ name | safe }}</h1>
+<h1>isso aq é p ser a pagina individual de cada user</h1>
+
+<br>
+<br>
+
+{% for item in query_posts %}
+<div class="container">
+    <section>
+        <p>{{ item }}</p>
+    </section>
+</div>
+{% endfor %}
 
 </body>
 </html>
+
+
+<!--
+<h1>Hello, {{ name | title }}</h1>
+<h1>Hello, {{ name | striptags }}</h1>
+<h1>Hello, {{ name | safe }}</h1>
+-->
