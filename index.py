@@ -10,21 +10,11 @@ app = Flask(__name__)
 
 import dotenv
 import os
-import MySQLdb
 
 dotenv_path = dotenv.find_dotenv()
 dotenv.load_dotenv(dotenv_path)
 print(dotenv_path)
 
-connection = MySQLdb.connect(
-    host=os.environ.get("DB_HOST"),
-    user=os.environ.get("DB_USERNAME"),
-    passwd=os.environ.get("DB_PASSWORD"),
-    db=os.environ.get("DB_NAME"),
-    autocommit=True,
-    #ssl_mode="VERIFY_IDENTITY",
-    ssl={"ca": "cacert-2023-08-22.pem"}
-)
 
 from sqlalchemy import create_engine, text
 engine = create_engine('mysql+pymysql://', echo=True, query_cache_size=0,
