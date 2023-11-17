@@ -8,17 +8,19 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 
 app = Flask(__name__)
 
-from dotenv import load_dotenv
-
-load_dotenv()
+import dotenv
 import os
 import MySQLdb
 
+dotenv_path = dotenv.find_dotenv()
+dotenv.load_dotenv(dotenv_path)
+print(dotenv_path)
+
 connection = MySQLdb.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USERNAME"),
-    passwd=os.getenv("DB_PASSWORD"),
-    db=os.getenv("DB_NAME"),
+    host=os.environ.get("DB_HOST"),
+    user=os.environ.get("DB_USERNAME"),
+    passwd=os.environ.get("DB_PASSWORD"),
+    db=os.environ.get("DB_NAME"),
     autocommit=True,
     #ssl_mode="VERIFY_IDENTITY",
     ssl={"ca": "cacert-2023-08-22.pem"}
@@ -26,8 +28,8 @@ connection = MySQLdb.connect(
 
 from sqlalchemy import create_engine, text
 engine = create_engine('mysql+pymysql://', echo=True, query_cache_size=0,
-                       connect_args=dict(host=os.getenv("DB_HOST"), ssl={"ca": "cacert-2023-08-22.pem"}, user=os.getenv("DB_USERNAME"),
-                                         password=os.getenv("DB_PASSWORD"), database=os.getenv("DB_NAME")))
+                       connect_args=dict(host=os.environ.get("DB_HOST"), ssl={"ca": "cacert-2023-08-22.pem"}, user=os.environ.get("DB_USERNAME"),
+                                         password=os.environ.get("DB_PASSWORD"), database=os.environ.get("DB_NAME")))
 
 
 Base = declarative_base()
