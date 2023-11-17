@@ -8,29 +8,34 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 
 app = Flask(__name__)
 
+from dotenv import load_dotenv
+
+load_dotenv()
+import os
 import MySQLdb
+
 connection = MySQLdb.connect(
-  host="aws.connect.psdb.cloud",
-  user="gctqalwc42mndry0j5bf",
-  passwd="pscale_pw_7WnPVnneTNaGjZYk5NnRHycEg6BPbS6iC4xUCohugue",
-  db="flask_planet",
-  autocommit=True,
-  #ssl_mode="VERIFY_IDENTITY",
-  ssl={'print': print('executando ssl'), "ca": "cacert-2023-08-22.pem", 'print2': print('ssl executado')}
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USERNAME"),
+    passwd=os.getenv("DB_PASSWORD"),
+    db=os.getenv("DB_NAME"),
+    autocommit=True,
+    #ssl_mode="VERIFY_IDENTITY",
+    ssl={"ca": "cacert-2023-08-22.pem"}
 )
 
 from sqlalchemy import create_engine, text
-engine = create_engine('mysql+pymysql://gctqalwc42mndry0j5bf:pscale_pw_7WnPVnneTNaGjZYk5NnRHycEg6BPbS6iC4xUCohugue@aws.connect.psdb.cloud/flask_planet?ssl={"rejectUnauthorized":True}', echo=True, query_cache_size=0,
-                       connect_args=dict(host='aws.connect.psdb.cloud', ssl={"ca": "cacert-2023-08-22.pem"}))
+engine = create_engine('mysql+pymysql://', echo=True, query_cache_size=0,
+                       connect_args=dict(host=os.getenv("DB_HOST"), ssl={"ca": "cacert-2023-08-22.pem"}, user=os.getenv("DB_USERNAME"),
+                                         password=os.getenv("DB_PASSWORD"), database=os.getenv("DB_NAME")))
 
-'''engine = create_engine('mysql+pymysql://root:XYwWDEPmb53sQD3ezUeH@containers-us-west-35.railway.app/railway?6471', echo=True, query_cache_size=0,
-                       connect_args=dict(host='containers-us-west-35.railway.app', port=6471))'''
 
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://gctqalwc42mndry0j5bf:pscale_pw_7WnPVnneTNaGjZYk5NnRHycEg6BPbS6iC4xUCohugue@aws.connect.psdb.cloud/flask_planet?ssl={"rejectUnauthorized":True}'
+database_uri = f'mysql+pymysql://{os.getenv("DB_USERNAME")}:{os.getenv("DB_PASSWORD")}@{os.getenv("DB_HOST")}/{os.getenv("DB_NAME")}'
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        #default é True
 app.config['SECRET_KEY'] = 'secret_key'
 

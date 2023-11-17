@@ -155,7 +155,7 @@ def login():
 app.run(debug=True)'''
 
 
-import MySQLdb
+'''import MySQLdb
 connection = MySQLdb.connect(
   host="aws.connect.psdb.cloud",
   user="gctqalwc42mndry0j5bf",
@@ -178,4 +178,13 @@ conn = engine.connect()
 query = conn.execute(text('select * from tb_users_planet'))
 
 for item in query:
-  print(item)
+  print(item)'''
+
+
+
+
+
+
+
+#mysql://user:password@host/database
+
