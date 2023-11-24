@@ -3,49 +3,33 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, create_engine, text, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from dotenv import find_dotenv, load_dotenv
+from os import getenv, environ
+
 
 app = Flask(__name__)
 
-import dotenv
-import os
 
-dotenv_path = dotenv.find_dotenv()
-dotenv.load_dotenv(dotenv_path)
-print(dotenv_path)
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
 
 
-from sqlalchemy import create_engine, text
 engine = create_engine('mysql+pymysql://', echo=True, query_cache_size=0,
-                       connect_args=dict(host=os.environ.get("DB_HOST"), ssl={"ca": "cacert-2023-08-22.pem"}, user=os.environ.get("DB_USERNAME"),
-                                         password=os.environ.get("DB_PASSWORD"), database=os.environ.get("DB_NAME")))
+                       connect_args=dict(host=environ.get("DB_HOST"), ssl={"ca": "cacert-2023-08-22.pem"}, user=environ.get("DB_USERNAME"),
+                                         password=environ.get("DB_PASSWORD"), database=environ.get("DB_NAME")))
 
 
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
-database_uri = f'mysql+pymysql://{os.getenv("DB_USERNAME")}:{os.getenv("DB_PASSWORD")}@{os.getenv("DB_HOST")}/{os.getenv("DB_NAME")}'
+database_uri = f'mysql+pymysql://{getenv("DB_USERNAME")}:{getenv("DB_PASSWORD")}@{getenv("DB_HOST")}/{getenv("DB_NAME")}'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        #default é True
 app.config['SECRET_KEY'] = 'secret_key'
 
 db = SQLAlchemy(app)
-
-'''
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    id = user_id
-    conn = engine.connect()
-    query = conn.execute(f"select * from tb_users_rail where id={id}")
-    return query
-'''
 
 
 class User(Base, UserMixin):
@@ -60,7 +44,7 @@ class Post(Base):
     __tablename__ = 'tb_posts_planet'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_user = Column(ForeignKey('tb_users_rail.id'))
+    id_user = Column(ForeignKey('tb_users_planet.id'))
     titulo = Column(String(80), nullable=False)
     texto = Column(String(244), nullable=False)
     data = Column(DateTime, nullable=False)
@@ -71,8 +55,8 @@ class Post(Base):
 
 @app.route('/')
 def index():
-    #computer2 = request.environ['REMOTE_ADDR']
-    #print('computer2 -->', computer2)
+    computer2 = request.environ['REMOTE_ADDR']
+    print('computer2 -->', computer2)
     return render_template('index.html')
 
 
