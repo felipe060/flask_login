@@ -27,7 +27,7 @@ session = Session()
 database_uri = f'mysql+pymysql://{getenv("DB_USERNAME")}:{getenv("DB_PASSWORD")}@{getenv("DB_HOST")}/{getenv("DB_NAME")}'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        #default é True
-app.config['SECRET_KEY'] = 'secret_key'
+app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 
 db = SQLAlchemy(app)
 
