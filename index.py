@@ -79,12 +79,12 @@ def user(id):
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
 
-    user = request.form.get('name_user')
+    email = request.form.get('name_email')
     senha = request.form.get('name_senha')
-    new_user = User(email=user, senha=senha)
+    new_user = User(email=email, senha=senha)
     print('')
     print(f'funcao add_user \n \n'
-          f'new user --> {user} \n'
+          f'new user --> {email} \n'
           f'senha --> {senha}')
 
     senha_hash = generate_password_hash(senha)
@@ -92,13 +92,13 @@ def add_user():
     print(f'senha_hash --> {senha_hash} \n')
 
     button = request.form['name_submit']
+    print(f'button --> {button} \n')
 
     if button == 'cadastrar':                   #botao cadastrar
-        print(f'button --> {button} \n')
         import sqlalchemy
         try:
             conn = engine.connect()
-            conn.execute(f"insert into tb_users_planet values (default, '{user}', '{senha_hash}')")
+            conn.execute(f"insert into tb_users_planet values (default, '{email}', '{senha_hash}')")
             print('')
             print('user adicionado c sucesso \n')
             return render_template('user_novo.html')
@@ -108,20 +108,18 @@ def add_user():
             return render_template('user_existe.html')
 
     elif button == 'login':                 #botao login
-        print('')
-        print(f'button --> {button} \n')
         conn = engine.connect()
-        query_user = conn.execute(f"select email from tb_users_planet where email = '{user}'")
+        query_user = conn.execute(f"select email from tb_users_planet where email = '{email}'")
         print('query_user --> ', query_user, '\n')
         for item in query_user:
             usuario = item.email
             print(usuario)
 
         try:
-            if user == usuario:
-                print('o user escrito no form consta no banco de dados')
+            if email == usuario:
+                print('o email escrito no form consta no banco de dados')
                 conn = engine.connect()
-                query_senha = conn.execute(f"select * from tb_users_planet where email = '{user}'")
+                query_senha = conn.execute(f"select * from tb_users_planet where email = '{email}'")
                 for item in query_senha:
                     query_senha = item.senha
                     print('query_senha -->', query_senha, '\n')
@@ -142,18 +140,18 @@ def add_user():
 def delete(id):
     try:
         id = id
-        query = session.execute(text(f"select id, user from tb_users_planet where id = {id}"))
+        query = session.execute(text(f"select id, email from tb_users_planet where id = {id}"))
         for item in query:
-            user = item.user
-        user = user
-        return render_template('delete.html', id=id, user=user)
+            email = item.email
+        email = email
+        return render_template('delete.html', id=id, email=email)
     except:
         return "this id dont have any user associated"
 
 
 @app.route('/delete_user', methods=['GET', 'POST'])
 def delete_user():
-    id = request.form.get('name_user')
+    id = request.form.get('name_email')
     try:
         conn = engine.connect()
         conn.execute(f"delete from tb_users_planet where id = {id}")

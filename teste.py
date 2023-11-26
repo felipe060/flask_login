@@ -181,10 +181,12 @@ for item in query:
   print(item)'''
 
 
-
-
-
-
-
 #mysql://user:password@host/database
 
+
+from os import environ, getenv
+
+print(environ)
+print(environ['allusersprofile'])
+print('')
+print(getenv('allusersprofilee'), 'rapaz ele ta sem zap')
