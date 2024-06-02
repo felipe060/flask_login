@@ -15,16 +15,16 @@ dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
 
-engine = create_engine('mysql+pymysql://', echo=True, query_cache_size=0,
-                       connect_args=dict(host=environ.get("DB_HOST"), ssl={"ca": "cacert-2023-08-22.pem"}, user=environ.get("DB_USERNAME"),
-                                         password=environ.get("DB_PASSWORD"), database=environ.get("DB_NAME")))
+engine = create_engine('postgresql+psycopg2://', echo=True, query_cache_size=0,
+                       connect_args=dict(host=environ.get("POSTGRES_HOST"), user=environ.get("POSTGRES_USER"),
+                                         password=environ.get("POSTGRES_PASSWORD"), database=environ.get("POSTGRES_DATABASE")))
 
 
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
-database_uri = f'mysql+pymysql://{getenv("DB_USERNAME")}:{getenv("DB_PASSWORD")}@{getenv("DB_HOST")}/{getenv("DB_NAME")}'
+database_uri = f'postgresql+psycopg2://{getenv("POSTGRES_USER")}:{getenv("POSTGRES_PASSWORD")}@{getenv("POSTGRES_HOST")}/{getenv("POSTGRES_DATABASE")}'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        #default é True
 app.config['SECRET_KEY'] = getenv('SECRET_KEY')
@@ -33,11 +33,15 @@ db = SQLAlchemy(app)
 
 
 class User(Base, UserMixin):
-    __tablename__ = 'tb_users_planet'
+    __tablename__ = 'tb_users_vercel'
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    email = Column(String(40), unique=True, nullable=False)
-    senha = Column(String(240), nullable=False)
+    id = Column(Integer, primary_key=True)
+    email = Column(String(80), nullable=False)
+    senha = Column(String(80), nullable=False)
+
+query = session.execute(text('select * from tb_users_vercel'))
+for item in query:
+    print(item)
 
 
 class Post(Base):
@@ -98,7 +102,7 @@ def add_user():
         import sqlalchemy
         try:
             conn = engine.connect()
-            conn.execute(f"insert into tb_users_planet values (default, '{email}', '{senha_hash}')")
+            conn.execute(f"insert into tb_users_vercel values (default, '{email}', '{senha_hash}')")
             print('')
             print('user adicionado c sucesso \n')
             return render_template('user_novo.html')
@@ -109,7 +113,7 @@ def add_user():
 
     elif button == 'login':                 #botao login
         conn = engine.connect()
-        query_user = conn.execute(f"select email from tb_users_planet where email = '{email}'")
+        query_user = conn.execute(f"select email from tb_users_vercel where email = '{email}'")
         print('query_user --> ', query_user, '\n')
         for item in query_user:
             usuario = item.email
@@ -119,7 +123,7 @@ def add_user():
             if email == usuario:
                 print('o email escrito no form consta no banco de dados')
                 conn = engine.connect()
-                query_senha = conn.execute(f"select * from tb_users_planet where email = '{email}'")
+                query_senha = conn.execute(f"select * from tb_users_vercel where email = '{email}'")
                 for item in query_senha:
                     query_senha = item.senha
                     print('query_senha -->', query_senha, '\n')
@@ -140,7 +144,7 @@ def add_user():
 def delete(id):
     try:
         id = id
-        query = session.execute(text(f"select id, email from tb_users_planet where id = {id}"))
+        query = session.execute(text(f"select id, email from tb_users_vercel where id = {id}"))
         for item in query:
             email = item.email
         email = email
@@ -154,7 +158,7 @@ def delete_user():
     id = request.form.get('name_email')
     try:
         conn = engine.connect()
-        conn.execute(f"delete from tb_users_planet where id = {id}")
+        conn.execute(f"delete from tb_users_vercel where id = {id}")
         return render_template('user_deleted.html')
     except:                                             #usuario n achado, n existe, n tem oq deletar
         return render_template('user_deleted.html')
