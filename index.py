@@ -39,10 +39,6 @@ class User(Base, UserMixin):
     email = Column(String(80), nullable=False)
     senha = Column(String(80), nullable=False)
 
-query = session.execute(text('select * from tb_users_vercel'))
-for item in query:
-    print(item)
-
 
 class Post(Base):
     __tablename__ = 'tb_posts_planet'
